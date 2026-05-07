@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uganda Emergency Response — Report</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body class="citizen-page">
+
+  <!-- Top Nav -->
+  <nav class="topnav">
+    <div class="topnav-inner">
+      <div class="logo">
+        <span class="logo-icon">&#9650;</span>
+        <span class="logo-text">UDERS</span>
+      </div>
+      <span class="nav-subtitle">Uganda Emergency Response System</span>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="citizen-hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Emergency Reporting</p>
+      <h1 class="hero-title">Report an<br /><span class="accent">incident now.</span></h1>
+      <p class="hero-sub">Your report is instantly routed to Police, Fire, and Medical units. Every second counts.</p>
+    </div>
+    <div class="hero-bg-circle"></div>
+  </header>
+
+  <!-- Main Form -->
+  <main class="citizen-main">
+    <div class="form-card">
+
+      <!-- SOS Button -->
+      <button class="sos-button" id="sosBtn" onclick="triggerSOS()">
+        <span class="sos-ring"></span>
+        <span class="sos-label">SOS — EMERGENCY</span>
+      </button>
+      <p class="sos-hint">Press SOS for immediate alert, or fill out the form below for a detailed report.</p>
+
+      <!-- Step 1: Incident Type -->
+      <section class="form-section">
+        <h2 class="section-title"><span class="step-num">01</span> Incident Type</h2>
+        <div class="incident-grid" id="incidentGrid">
+          <button class="incident-type active" data-type="fire" onclick="selectIncident(this)">
+            <span class="inc-icon fire-icon">&#128293;</span>
+            <span class="inc-label">Fire</span>
+            <span class="inc-desc">Building, vehicle, or wildfire</span>
+          </button>
+          <button class="incident-type" data-type="medical" onclick="selectIncident(this)">
+            <span class="inc-icon med-icon">&#128657;</span>
+            <span class="inc-label">Medical</span>
+            <span class="inc-desc">Accident, illness, or injury</span>
+          </button>
+          <button class="incident-type" data-type="police" onclick="selectIncident(this)">
+            <span class="inc-icon police-icon">&#128737;</span>
+            <span class="inc-label">Police / Crime</span>
+            <span class="inc-desc">Theft, assault, or security threat</span>
+          </button>
+          <button class="incident-type" data-type="disaster" onclick="selectIncident(this)">
+            <span class="inc-icon disaster-icon">&#127785;</span>
+            <span class="inc-label">Disaster</span>
+            <span class="inc-desc">Flood, landslide, or collapse</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 2: GPS Location -->
+      <section class="form-section">
+        <h2 class="section-title"><span class="step-num">02</span> Your Location</h2>
+        <div class="gps-card" id="gpsCard">
+          <div class="gps-status">
+            <span class="gps-pulse" id="gpsPulse"></span>
+            <span class="gps-status-text" id="gpsStatusText">Acquiring GPS…</span>
+          </div>
+          <div class="gps-coords" id="gpsCoords">—</div>
+          <div class="gps-accuracy" id="gpsAccuracy"></div>
+        </div>
+        <button class="btn-secondary" onclick="refreshGPS()">&#8635; Refresh location</button>
+      </section>
+
+      <!-- Step 3: Description -->
+      <section class="form-section">
+        <h2 class="section-title"><span class="step-num">03</span> Describe the Incident</h2>
+        <textarea
+          id="incidentDesc"
+          class="desc-textarea"
+          rows="4"
+          placeholder="Briefly describe what is happening, how many people are involved, and any immediate dangers…"
+        ></textarea>
+      </section>
+
+      <!-- Step 4: Media Upload -->
+      <section class="form-section">
+        <h2 class="section-title"><span class="step-num">04</span> Attach Media</h2>
+        <div class="media-row">
+          <label class="media-btn" for="photoUpload">
+            <span class="media-icon">&#128247;</span>
+            <span>Photo</span>
+            <input type="file" id="photoUpload" accept="image/*" capture="environment" onchange="handleMedia(this, 'photo')" />
+          </label>
+          <label class="media-btn" for="videoUpload">
+            <span class="media-icon">&#127910;</span>
+            <span>Video</span>
+            <input type="file" id="videoUpload" accept="video/*" capture="environment" onchange="handleMedia(this, 'video')" />
+          </label>
+          <label class="media-btn" for="audioUpload">
+            <span class="media-icon">&#127908;</span>
+            <span>Audio</span>
+            <input type="file" id="audioUpload" accept="audio/*" onchange="handleMedia(this, 'audio')" />
+          </label>
+        </div>
+        <div id="mediaPreview" class="media-preview"></div>
+      </section>
+
+      <!-- Step 5: Contact -->
+      <section class="form-section">
+        <h2 class="section-title"><span class="step-num">05</span> Your Contact (optional)</h2>
+        <input type="text" class="text-input" id="reporterName" placeholder="Full name" />
+        <input type="tel" class="text-input" id="reporterPhone" placeholder="Phone number (e.g. +256 700 000000)" />
+      </section>
+
+      <!-- Submit -->
+      <div class="form-footer">
+        <div class="sms-notice">
+          <span class="sms-dot">&#9679;</span> SMS fallback active — alerts will reach responders even on 2G
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="submitReport()">
+          Submit Report
+          <span class="submit-arrow">&#8594;</span>
+        </button>
+      </div>
+
+    </div><!-- /form-card -->
+
+    <!-- Success Toast -->
+    <div class="toast" id="toast" role="alert" aria-live="assertive">
+      <span class="toast-icon">&#10003;</span>
+      <div>
+        <strong>Report received!</strong><br />
+        Agencies have been alerted. Stay safe.
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Uganda Emergency Response System &mdash; Version 1.0</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

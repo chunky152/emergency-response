@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uganda Emergency Response — Dispatch Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body class="dispatch-page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">&#9650;</span>
+      <span class="logo-text">UDERS</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link active">
+        <span class="sidebar-icon">&#9632;</span> Dashboard
+      </a>
+      <a href="#" class="sidebar-link">
+        <span class="sidebar-icon">&#9675;</span> Incidents
+      </a>
+      <a href="#" class="sidebar-link">
+        <span class="sidebar-icon">&#9675;</span> Units
+      </a>
+      <a href="#" class="sidebar-link">
+        <span class="sidebar-icon">&#9675;</span> Reports
+      </a>
+      <a href="#" class="sidebar-link">
+        <span class="sidebar-icon">&#9675;</span> Settings
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <div class="dispatch-main">
+
+    <!-- Top bar -->
+    <header class="dispatch-topbar">
+      <div>
+        <h1 class="dispatch-title">Dispatch Control Center</h1>
+        <p class="dispatch-subtitle" id="liveTime">Loading time…</p>
+      </div>
+      <div class="topbar-right">
+        <span class="live-badge"><span class="live-dot"></span> Live Feed</span>
+        <div class="operator-badge">Operator: <strong>OC Muwanguzi</strong></div>
+      </div>
+    </header>
+
+    <!-- Stat cards -->
+    <section class="stats-row">
+      <div class="stat-card critical-stat">
+        <span class="stat-label">Active Incidents</span>
+        <span class="stat-value" id="statActive">7</span>
+      </div>
+      <div class="stat-card amber-stat">
+        <span class="stat-label">Awaiting Dispatch</span>
+        <span class="stat-value" id="statPending">3</span>
+      </div>
+      <div class="stat-card green-stat">
+        <span class="stat-label">Resolved Today</span>
+        <span class="stat-value" id="statResolved">24</span>
+      </div>
+      <div class="stat-card blue-stat">
+        <span class="stat-label">Units Deployed</span>
+        <span class="stat-value" id="statUnits">12</span>
+      </div>
+    </section>
+
+    <!-- Two-column layout: incidents + map -->
+    <div class="dispatch-grid">
+
+      <!-- Incidents column -->
+      <section class="incidents-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Incoming Incidents</h2>
+          <div class="filter-row">
+            <button class="filter-btn active" onclick="filterIncidents('all', this)">All</button>
+            <button class="filter-btn" onclick="filterIncidents('fire', this)">Fire</button>
+            <button class="filter-btn" onclick="filterIncidents('medical', this)">Medical</button>
+            <button class="filter-btn" onclick="filterIncidents('police', this)">Police</button>
+          </div>
+        </div>
+        <div class="incidents-list" id="incidentsList">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Right column: Map + Agencies -->
+      <section class="right-panel">
+
+        <!-- Map placeholder -->
+        <div class="map-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Live Incident Map — Kampala</h2>
+            <span class="map-coords-hint">GPS-tagged reports</span>
+          </div>
+          <div class="map-area" id="mapArea">
+            <svg id="mapSvg" viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg">
+              <!-- Grid lines -->
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="480" height="280" fill="#f0f4f8"/>
+              <rect width="480" height="280" fill="url(#grid)"/>
+              <!-- Road lines -->
+              <line x1="0" y1="140" x2="480" y2="140" stroke="#cbd5e0" stroke-width="3"/>
+              <line x1="240" y1="0" x2="240" y2="280" stroke="#cbd5e0" stroke-width="3"/>
+              <line x1="0" y1="80" x2="480" y2="200" stroke="#e2e8f0" stroke-width="2"/>
+              <line x1="0" y1="200" x2="480" y2="80" stroke="#e2e8f0" stroke-width="2"/>
+              <!-- Labels -->
+              <text x="16" y="136" fill="#94a3b8" font-size="9" font-family="DM Mono">Jinja Rd</text>
+              <text x="244" y="16" fill="#94a3b8" font-size="9" font-family="DM Mono">Kampala Rd</text>
+              <!-- Incident pins rendered by JS -->
+              <g id="mapPins"></g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Agency Status -->
+        <div class="agency-panel">
+          <h2 class="panel-title">Agency Status</h2>
+          <div class="agency-cards">
+            <div class="agency-card" id="agencyPolice">
+              <div class="agency-left">
+                <span class="agency-badge police-badge">P</span>
+                <div>
+                  <div class="agency-name">Uganda Police</div>
+                  <div class="agency-units" id="policeUnits">5 units available</div>
+                </div>
+              </div>
+              <span class="agency-status online" id="policeStatus">Online</span>
+            </div>
+            <div class="agency-card" id="agencyFire">
+              <div class="agency-left">
+                <span class="agency-badge fire-badge">F</span>
+                <div>
+                  <div class="agency-name">Fire Brigade</div>
+                  <div class="agency-units" id="fireUnits">4 units available</div>
+                </div>
+              </div>
+              <span class="agency-status busy" id="fireStatus">Active</span>
+            </div>
+            <div class="agency-card" id="agencyMedical">
+              <div class="agency-left">
+                <span class="agency-badge med-badge">M</span>
+                <div>
+                  <div class="agency-name">Medical Services</div>
+                  <div class="agency-units" id="medUnits">3 units available</div>
+                </div>
+              </div>
+              <span class="agency-status online" id="medStatus">Online</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification log -->
+        <div class="log-panel">
+          <h2 class="panel-title">Alert Log</h2>
+          <ul class="alert-log" id="alertLog">
+            <!-- Entries will be loaded dynamically -->
+          </ul>
+        </div>
+
+      </section>
+    </div><!-- /dispatch-grid -->
+  </div><!-- /dispatch-main -->
+
+  <!-- Dispatch Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal" id="dispatchModal" onclick="event.stopPropagation()">
+      <h2 class="modal-title">Dispatch Unit</h2>
+      <p class="modal-body" id="modalBody">Select a unit to dispatch to this incident.</p>
+      <div class="modal-agency-list" id="modalAgencyList"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive">
+    <span class="toast-icon">&#10003;</span>
+    <div>
+      <strong id="toastTitle">Success!</strong><br />
+      <span id="toastMsg">Action completed.</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

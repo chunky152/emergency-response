@@ -1,0 +1,15 @@
+# Dependency directories
+../backend/node_modules/
+**/node_modules/
+
+# Environment files
+.env
+**/ .env
+.env.example
+
+# User uploads
+**/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db

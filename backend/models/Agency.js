@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const agencySchema = new mongoose.Schema({
-  key: { type: String, unique: true, required: true }, // 'police', 'fire', 'medical'
+  key: { type: String, required: true }, // 'police', 'fire', 'medical'
+
   name: { type: String, required: true },
   totalUnits: { type: Number, required: true },
   availableUnits: { type: Number, required: true },
@@ -9,6 +10,10 @@ const agencySchema = new mongoose.Schema({
     type: String,
     enum: ['online', 'busy', 'offline'],
     default: 'online',
+  },
+  location: {
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true },
   },
 }, { timestamps: true });
 

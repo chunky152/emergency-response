@@ -79,10 +79,101 @@ const seedIncidents = [
 ];
 
 const seedAgencies = [
-  { key: 'police', name: 'Uganda Police',     totalUnits: 5, availableUnits: 5, status: 'online' },
-  { key: 'fire',   name: 'Fire Brigade',       totalUnits: 4, availableUnits: 3, status: 'busy'   },
-  { key: 'medical',name: 'Medical Services',   totalUnits: 3, availableUnits: 2, status: 'online' },
+  // Police Stations
+  {
+    key: 'police',
+    name: 'Central Police Station (CPS)',
+    totalUnits: 12,
+    availableUnits: 8,
+    status: 'online',
+    location: { lat: 0.3136, lng: 32.5811 },
+  },
+  {
+    key: 'police',
+    name: 'Kira Road Police Station',
+    totalUnits: 8,
+    availableUnits: 5,
+    status: 'online',
+    location: { lat: 0.3425, lng: 32.6015 },
+  },
+  {
+    key: 'police',
+    name: 'Wandegeya Police Station',
+    totalUnits: 6,
+    availableUnits: 3,
+    status: 'busy',
+    location: { lat: 0.3305, lng: 32.5710 },
+  },
+  {
+    key: 'police',
+    name: 'Kabalagala Police Station',
+    totalUnits: 5,
+    availableUnits: 5,
+    status: 'online',
+    location: { lat: 0.2980, lng: 32.6050 },
+  },
+
+  // Fire Stations
+  {
+    key: 'fire',
+    name: 'Kampala Fire Brigade HQ',
+    totalUnits: 10,
+    availableUnits: 4,
+    status: 'busy',
+    location: { lat: 0.3206, lng: 32.5825 },
+  },
+  {
+    key: 'fire',
+    name: 'Nakawa Fire Station',
+    totalUnits: 4,
+    availableUnits: 3,
+    status: 'online',
+    location: { lat: 0.3430, lng: 32.6200 },
+  },
+  {
+    key: 'fire',
+    name: 'Kawempe Fire Station',
+    totalUnits: 3,
+    availableUnits: 2,
+    status: 'online',
+    location: { lat: 0.3700, lng: 32.5600 },
+  },
+
+  // Medical Centers
+  {
+    key: 'medical',
+    name: 'Mulago Hospital (ER)',
+    totalUnits: 15,
+    availableUnits: 6,
+    status: 'online',
+    location: { lat: 0.3381, lng: 32.5750 },
+  },
+  {
+    key: 'medical',
+    name: 'Naguru Referral Hospital',
+    totalUnits: 6,
+    availableUnits: 4,
+    status: 'online',
+    location: { lat: 0.3480, lng: 32.6100 },
+  },
+  {
+    key: 'medical',
+    name: 'Case Hospital Emergency',
+    totalUnits: 4,
+    availableUnits: 2,
+    status: 'busy',
+    location: { lat: 0.3250, lng: 32.5780 },
+  },
+  {
+    key: 'medical',
+    name: 'IHK Namuwongo',
+    totalUnits: 5,
+    availableUnits: 3,
+    status: 'online',
+    location: { lat: 0.3050, lng: 32.6150 },
+  },
 ];
+
 
 async function seed() {
   await mongoose.connect(MONGO_URI);

@@ -12,9 +12,6 @@ const API = {
   stats:     () => `${API.BASE}/api/incidents/stats`,
 };
 
-/* ============================================================
-   LOCAL UI STATE  (no more in-memory incidents / agencies)
-   ============================================================ */
 const UIState = {
   selectedIncidentType: 'fire',
   gpsCoords: null,
@@ -416,11 +413,11 @@ async function openDispatchModal(incidentId) {
   UIState.selectedAgencyKey  = null;
 
   try {
-    const [incRes, agRes] = await Promise.all([
-      fetch(API.incident(incidentId)),
-      fetch(API.agencies()),
-    ]);
-    const inc      = await incRes.json();
+    // Fetch incident to get its location
+    const incRes = await fetch(API.incident(incidentId));
+    const inc = await incRes.json();
+    // Request agencies sorted by proximity to incident location
+    const agRes = await fetch(`${API.agencies()}?lat=${inc.coords.lat}&lng=${inc.coords.lng}`);
     const agencies = await agRes.json();
 
     document.getElementById('modalBody').textContent =
@@ -437,7 +434,8 @@ async function openDispatchModal(incidentId) {
         <input type="radio" name="agency" value="${ag.key}" 
           ${!isAvailable ? 'disabled' : ''}
           onchange="selectAgency('${ag.key}', this.parentElement)" />
-        <span>${ag.name} — ${ag.availableUnits} unit${ag.availableUnits !== 1 ? 's' : ''} available</span>
+        <span>${ag.name} — ${ag.availableUnits} unit${ag.availableUnits !== 1 ? 's' : ''} available
+        <span style="color:#64748b;font-size:12px;"> (${ag.distance ? ag.distance.toFixed(2) : '?'} km away)</span></span>
       `;
       agencyList.appendChild(opt);
     });
